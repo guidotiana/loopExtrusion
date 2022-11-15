@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include <ctime>
 #include <cmath>
+#include <iomanip>
 
 #ifndef HPARAMETERS
 #define HPARAMETERS

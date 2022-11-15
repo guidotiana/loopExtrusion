@@ -1,5 +1,5 @@
 CPP = c++
-CFLAGS = -I.
+CFLAGS = -I. -std=c++0x
 LFLAGS = -lm
 DEPS = extrusion.h parameters.h
 OBJ = loopExtrusion.o extrusion.o parameters.o
