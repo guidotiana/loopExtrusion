@@ -1,0 +1,52 @@
+#include <ctype.h>
+#include <cstring>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <ctime>
+#include <string>
+#include <vector>
+#include <sys/types.h>
+#include <unistd.h>
+
+using namespace std;
+
+#define VERSION "0.1"
+
+
+class Parameters
+{
+
+      public:
+
+      int length;
+      double time_max;
+      int stride_log;
+      double k_binding;
+      double k_unbinding;
+      double k_step;  
+      double k_cross_ctcf;
+      bool verbose;
+      bool debug;
+      bool allow_overcome;
+      int n_extr_tot; 		// set to -1 to ignore
+      int n_extr_max; 		
+      int seed;
+
+      Parameters( int, char ** );
+      void Error( string );
+      bool ReadFile( string );
+
+
+      private:
+
+      void Split(const string& s, string c, vector<string>& v);
+      void Welcome( string version );
+      string BoolToString(bool b);
+      
+
+
+
+
+};
