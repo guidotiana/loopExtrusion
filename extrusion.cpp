@@ -421,10 +421,13 @@ bool Extrusion::AddExtruder(int i, int j, int iTimeI, int iTimeJ)
      return false;
   }
 
-  // set output
-  add_link = true;
-  add_link_i = i;
-  add_link_j = j;
+  // tell lammps to add a link if there were none
+  if ( map[i][j] == 1 )
+  {
+    add_link = true;
+    add_link_i = i;
+    add_link_j = j;
+  }
 
   return true;
 }
@@ -455,10 +458,13 @@ bool Extrusion::RemoveExtruder(int i, int j)
 
   n_extr_bound --;
 
-  // set output
-  delete_link = true;
-  delete_link_i = i;
-  delete_link_j = j;
+  // tell lammps to remove a link if there was only one left
+  if ( map[i][j] == 0 )
+  {
+     delete_link = true;
+     delete_link_i = i;
+     delete_link_j = j;
+  }
 
   return true;
 }
