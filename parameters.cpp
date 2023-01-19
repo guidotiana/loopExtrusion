@@ -9,7 +9,7 @@ Parameters::Parameters( int argc, char **argv )
 {
      string fileName; 
 
-     if ( argc != 2 ) Error("Name of parameters file not provided");
+     if ( argc != 3 ) Error("Name of parameters file not provided");
      fileName = argv[1];
 
      // defaults
@@ -23,6 +23,7 @@ Parameters::Parameters( int argc, char **argv )
      n_extr_tot = -1;
      seed = -1;
      stride_log = -1;
+     n_extr_max = 0.;
 
 
      debug = false;
@@ -72,8 +73,8 @@ bool Parameters::ReadFile( string fileName )
      // write log
      if  (verbose )
      {
+        
         Welcome( VERSION );
-
         cout << "Parameters read from "+fileName << endl;
         cout << "time_max          = "+to_string(time_max) << endl;
         cout << "stride_log        = "+to_string(stride_log) << endl;
@@ -155,7 +156,7 @@ void Parameters::Welcome( string version )
 
    cout << "*****************************************************" << endl;
    cout << "*                                                   *" << endl;
-   cout << "*             loopEstrusion v. "+version+"                  *" << endl;
+   cout << "*             loopExtrusion v. "+version+"                  *" << endl;
    cout << "*                                                   *" << endl;
    cout << "*****************************************************" << endl;
    cout << " Started: " << dt ;

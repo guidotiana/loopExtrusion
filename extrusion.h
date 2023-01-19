@@ -43,7 +43,7 @@ class Extrusion
      int delete_link_i;
      int delete_link_j;
      int n_extr_bound;		// how many extruders bound
- 
+     int (*extrList)[4];	// 0=i, 1=j, 2=time last move i, 3=time last move j
      string exitError;
 
      // functions
@@ -67,7 +67,6 @@ class Extrusion
      int n_extr_max;
      double propensities[NREACT+1];
      int **map;			// how many extruders between i and j
-     int (*extrList)[4];	// 0=i, 1=j, 2=time last move i, 3=time last move j
      string reaction_name[NREACT+1];
 
 

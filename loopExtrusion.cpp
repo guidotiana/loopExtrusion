@@ -1,37 +1,75 @@
 #include "extrusion.h"
+#include "interface_lmp.h"
+#include <sstream>
+#include <iostream>
+#include <string>
+
 #ifndef HPARAMETERS
 #define HPARAMETERS
 #include "parameters.h"
 #endif
 
 int main(int argc, char **argv)
-{
+{   
+    //Defining variables
     double time=0, tau;
     bool ok;
     int iStep=0;
-
+    double tau_min=300, tau_0=0; //minimum time between dynamics runs 
+    string data_line = "write_data last.data"; 
+    
+    //Reading Gillespie parameters
     Parameters parm(argc, argv);
 
+    //Initializing extrusion algorithm
     Extrusion e( parm );
 
-    // time loop of extruder Markov chain
+    //Initialing lammps and opening interface
+    Interface_lmp inter_lmp(argc, argv); 
+   
+    //Reading CTCF sites
+    e.ReadCTCF("ctcf_sites.data");
+ 
+    //Main Gillespie loop    
     do
-    {
-       // Gillespie event
-       ok = e.Event( parm.debug );
-     
-       // Update of links
-       // here update of contacts using e.addlink, etc.
+    {  
+       while (tau_0 < tau_min)
+       {
+          // Gillespie event
+          ok = e.Event( parm.debug );
+          tau_0 += e.tau;
 
-       // MD
-       // here MD from time to (time + e.tau)
-       time += e.tau;
+          // Update of links
+          inter_lmp.update_bonds(2, e.add_link, e.delete_link, e.add_link_i, e.add_link_j, e.delete_link_i, e.delete_link_j);
+       }
+
+       //Minimize energy of new configuration
+       inter_lmp.minimize();
+       
+       //Molecular dynamics with LAMMPS from time to (time + e.tau)
+       time += tau_0;
+       inter_lmp.run_dynamics(ceil(tau_0));
+       
+       //Update internal time variables
        iStep ++;
+       tau_0 = 0;
 
-       // print output
-       if ( parm.stride_log>0 && !(iStep%parm.stride_log) ) cout << time << "\t\t" << e.n_extr_bound << endl;
-
+       //Print output
+       if ( parm.stride_log>0 && !(iStep%parm.stride_log) )
+       {
+          cout << "Time = " << time << "\t\t" << "# extruders = " << e.n_extr_bound << endl;
+       }
     } while ( time < parm.time_max );
-
-    return 0;
+  
+   cout << "Final number of extruders: " << e.n_extr_bound << endl; 
+   
+   //Writing final configuration
+   inter_lmp.write_data(data_line); 
+   
+   //Closing LAMMPS
+   inter_lmp.close_lmp();
+    
+   cout << "Done!" << endl;
+    
+   return 0;
 }

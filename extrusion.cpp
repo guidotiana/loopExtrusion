@@ -1,7 +1,5 @@
 #include "extrusion.h"
 
-
-
 /////////////////////////////////////////////
 // Extrusion constructor
 /////////////////////////////////////////////
@@ -10,6 +8,7 @@ Extrusion::Extrusion(Parameters parm)
    if (parm.debug) cerr << "Initializing extrusion..." << endl;
 
    length = parm.length;
+   seed = parm.seed;
 
    // allocate memory
    map = AlloArrayInt(parm.length);
@@ -32,6 +31,7 @@ Extrusion::Extrusion(Parameters parm)
    k_cross_ctcf = parm.k_cross_ctcf;
    allow_overcome = parm.allow_overcome;
    n_extr_tot = parm.n_extr_tot;
+   n_extr_max = parm.n_extr_max;
 
    // set output defaults
    bool add_link = false;
@@ -50,8 +50,6 @@ Extrusion::Extrusion(Parameters parm)
    if (seed != 0) Randomize(seed, parm.debug); 
 }
 
-
-
 /////////////////////////////////////////////
 // Simulate an event of Gillespie algorithm 
 /////////////////////////////////////////////
@@ -61,6 +59,10 @@ bool Extrusion::Event(bool debug=false)
    int r;
 
    if ( debug ) cerr << to_string(iTime)+") Starting Gillespie event" << endl;
+
+   // reset request to lammps
+   add_link = false;
+   delete_link = false;
 
    // Calculate propensities for the different reactions
    CalulatePropensities(debug);
@@ -90,7 +92,7 @@ bool Extrusion::Event(bool debug=false)
 // Bind an extruder to random sites i and i+1 
 /////////////////////////////////////////////
 bool Extrusion::RandomBind( bool debug=false )
-{
+{   
    int i = iRand(length-1);
    if (debug) cerr << to_string(iTime)+") Random bind extruder at sites "+to_string(i)+"-"+to_string(i+1) << endl; 
    return AddExtruder(i, i+1, iTime, iTime);        
@@ -118,7 +120,7 @@ bool Extrusion::RandomUnbind( bool debug=false )
 bool Extrusion::RandomStepForward(  bool ctcf_cross,  bool debug=false )
 {
    int i, j, iTimeI, iTimeJ, w, cnt=0, dir;
-   bool go_ahead;
+   bool go_ahead,ok;
 
    do
    {
@@ -157,6 +159,7 @@ bool Extrusion::RandomStepForward(  bool ctcf_cross,  bool debug=false )
        {
            RemoveExtruder(i, j);
            AddExtruder(i-1, j, iTime, iTimeJ);
+
            if (debug) cerr << to_string(iTime)+") Accepted move to "+to_string(i-1)+"-"+to_string(j) << endl;
            return true;
        }
@@ -166,6 +169,7 @@ bool Extrusion::RandomStepForward(  bool ctcf_cross,  bool debug=false )
 
            RemoveExtruder(i, j);
            AddExtruder(i, j+1, iTimeI, iTime);
+
            if (debug) cerr << to_string(iTime)+") Accepted move to "+to_string(i)+"-"+to_string(j+1) << endl;
            return true;
        }
@@ -178,28 +182,38 @@ bool Extrusion::RandomStepForward(  bool ctcf_cross,  bool debug=false )
   return false;
 }
 
-
-
 /////////////////////////////////////////////
 // Read ctcf from file 
 /////////////////////////////////////////////
 bool Extrusion::ReadCTCF(string fileName)
 {
-   int i;
+   
+   //4 CTCF types. 
+   // -1 : left barrier 
+   // 0 : no CTCF
+   // +1 : right barrier
+   // +2 : bidirectional barrier 
+   
+   int i, ctcf_type;
    string line;
 
    ifstream fin(fileName);
    if ( fin.is_open() )
    {
-      while( getline(fin, line) )
+      while( fin >> i >> ctcf_type)
       {
-          i = stoi(line);
           if (i<0 || i>=length)
           {
-             exitError = "CTCF site out of range, i = "+line;
-             return false;
+             cout << "CTCF site out of range, i = " << i << endl;
+             exit(1);
           }
-          ctcf[ i ] = 1;
+          else if (ctcf_type != -1 && ctcf_type != 1 && ctcf_type != 2)
+          {
+             cout << "Wrong CTCF type (" << ctcf_type << ")  Must be 1 (left), -1 (right) or 2 (bidirectional)" << endl;
+             exit(1); 
+          }
+         
+          ctcf[ i ] = ctcf_type;
           nCTCF ++;
       }
    }
@@ -210,6 +224,8 @@ bool Extrusion::ReadCTCF(string fileName)
    }
 
    fin.close();
+
+   cout << "CTCF sites read from " << fileName << endl;
 
    return true;
 }    
@@ -414,13 +430,20 @@ bool Extrusion::AddExtruder(int i, int j, int iTimeI, int iTimeJ)
   occupiedSites[i] ++;
   occupiedSites[j] ++;
   n_extr_bound ++;
-
-  if ( n_extr_bound >= n_extr_max ) 
-  {
+  if ( n_extr_bound >= n_extr_max )
+  { 
      exitError = "nEntrMax too small.";
-     return false;
+     CatchError(false);
   }
-
+  
+ 
+/*  
+  // set output
+  add_link = true;
+  add_link_i = i;
+  add_link_j = j;
+*/ 
+  
   // tell lammps to add a link if there were none
   if ( map[i][j] == 1 )
   {
@@ -457,7 +480,12 @@ bool Extrusion::RemoveExtruder(int i, int j)
      }
 
   n_extr_bound --;
-
+/*
+  // set output
+  delete_link = true;
+  delete_link_i = i;
+  delete_link_j = j;
+*/
   // tell lammps to remove a link if there was only one left
   if ( map[i][j] == 0 )
   {
@@ -502,8 +530,9 @@ bool Extrusion::LogicalXOR(bool a, bool b)
 void Extrusion::Randomize(int seed, bool debug=false)
 {
    if (seed<0) seed = time(NULL) % 29799493;
-   if ( debug ) cerr << "Random seed = "+to_string(seed) << endl;
-   for (int i=0;i<seed;i++) iRand(seed%100);
+   cout << "Random seed = "+to_string(seed) << endl;
+   cout << "" << endl;
+   for (int i=0;i<seed;i++) iRand(seed%100+1);
 }
 
 
@@ -526,11 +555,11 @@ bool Extrusion::CalulatePropensities( bool debug=false )
 
    // 3 - stepping (no ctcf)
    if ( k_step > 0 )
-   {
+   { 
       for (int w=0;w<n_extr_bound;w++)
         for (int dir=0;dir<2;dir++) 
-          if ( CheckStepOk(w, dir, false,  false ) ) n_steppable += 1;
-      propensities[3] = k_step * n_steppable;
+          if ( CheckStepOk(w, dir, false,  debug ) ) n_steppable += 1; 
+      propensities[3] = k_step * n_steppable; 
    }
 
    // 4 - crossing ctcf
@@ -538,7 +567,7 @@ bool Extrusion::CalulatePropensities( bool debug=false )
    {
       for (int w=0;w<n_extr_bound;w++)
         for (int dir=0;dir<2;dir++) 
-          if ( CheckStepOk(w, dir, true,  false ) ) n_cross_ctcf += 1;
+          if ( CheckStepOk(w, dir, true,  debug ) ) n_cross_ctcf += 1;
       propensities[4] = k_cross_ctcf * n_cross_ctcf;
    }
 
@@ -554,12 +583,11 @@ bool Extrusion::CalulatePropensities( bool debug=false )
    return true;
 }
 
-
 /////////////////////////////////////////////
 // check if suggested step clashes with another extrusor and if is on ctcf 
 /////////////////////////////////////////////
 bool Extrusion::CheckStepOk( int w, int dir, bool ctcf_cross, bool debug=false )
-{
+{   
    int i = extrList[w][0];
    int j = extrList[w][1];
    int iTimeI = extrList[w][2];
@@ -569,12 +597,12 @@ bool Extrusion::CheckStepOk( int w, int dir, bool ctcf_cross, bool debug=false )
                            ") direction="+to_string(dir) << endl;
      
    
-   // check if it is overcoming another extrusor
+   // check if it is allowed overcoming another extrusor
    if ( !allow_overcome )
    {
       if ( dir == 0 )
       {
-        for (int k;k<n_extr_bound;k++) 	// if there is an extrusor in i from more time, skip.
+        for (int k=0;k<n_extr_bound;k++) 	// if there is an extrusor in i from more time, skip.
            if ( (extrList[k][0] == i && extrList[k][2] < iTimeI ) || 
                     (extrList[k][1] == i && extrList[k][3] < iTimeI ) ) 
            {
@@ -585,7 +613,7 @@ bool Extrusion::CheckStepOk( int w, int dir, bool ctcf_cross, bool debug=false )
       }
       else if ( dir == 1 )
       {
-        for (int k;k<n_extr_bound;k++) 	// if there is an extrusor in j from more time, skip.
+        for (int k=0;k<n_extr_bound;k++) 	// if there is an extrusor in j from more time, skip.
            if ( (extrList[k][0] == j && extrList[k][2] < iTimeI ) || 
                     (extrList[k][1] == j && extrList[k][3] < iTimeI ) ) 
            {
@@ -597,12 +625,18 @@ bool Extrusion::CheckStepOk( int w, int dir, bool ctcf_cross, bool debug=false )
    }
 
    // check if meeting ctcf condition of the function argument
-   // of i
-       if ( dir == 0 && LogicalXOR( ctcf[i-1] == 0, ctcf_cross )  )	
-           return true;
-       // of j
-       else if ( dir == 1 && LogicalXOR( ctcf[j+1] == 0,  ctcf_cross )  )
-           return true;
+   // of i (left)
+   if ( dir == 0 )
+   {
+      if (ctcf_cross && (ctcf[i-1] == -1 || ctcf[i-1] == 2)) return true;
+      else if (!ctcf_cross && (ctcf[i-1] == 0 || ctcf[i-1] == 1)) return true;  
+   }
+   //of j (right)
+   else if ( dir == 1 )
+   {
+      if (ctcf_cross && (ctcf[j+1] == 1 || ctcf[j+1] == 2)) return true;
+      else if (!ctcf_cross && (ctcf[j+1] == 0 || ctcf[j+1] == -1)) return true;
+   }
 
    return false;
 

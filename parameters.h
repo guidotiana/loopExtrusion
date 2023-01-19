@@ -37,12 +37,12 @@ class Parameters
       Parameters( int, char ** );
       void Error( string );
       bool ReadFile( string );
+      void Welcome( string version );
 
 
       private:
 
       void Split(const string& s, string c, vector<string>& v);
-      void Welcome( string version );
       string BoolToString(bool b);
       
 
