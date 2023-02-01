@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     //Initializing extrusion algorithm
     Extrusion e( parm );
 
-    //Initialing lammps and opening interface
+    //Initializing lammps and opening interface
     Interface_lmp inter_lmp(argc, argv); 
    
     //Reading CTCF sites
