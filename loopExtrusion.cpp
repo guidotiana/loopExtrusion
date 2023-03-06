@@ -48,7 +48,7 @@ int main(int argc, char **argv)
        
        //Molecular dynamics with LAMMPS from time to (time + e.tau)
        time += tau_0;
-       inter_lmp.run_dynamics(ceil(tau_0));
+       inter_lmp.run_dynamics(min(parm.time_max,ceil(tau_0)));
        
        //Update internal time variables
        iStep ++;
