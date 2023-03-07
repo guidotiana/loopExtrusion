@@ -1,5 +1,5 @@
 CPP = mpicxx
-CFLAGS = -I. -std=c++0x -I/home/edoardo/prog/lammps-29Sep2021/src -I/home/edoardo/include -g 
+CFLAGS = -I. -std=c++0x -I/home/edoardo/prog/lammps-29Sep2021/src -g 
 LFLAGS = -lm -L/home/edoardo/prog/lammps-29Sep2021/build -llammps 
 DEPS = extrusion.h parameters.h interface_lmp.h
 OBJ = loopExtrusion.o extrusion.o parameters.o interface_lmp.o
