@@ -593,8 +593,8 @@ bool Extrusion::CheckStepOk( int w, int dir, bool ctcf_cross, bool debug=false )
    int iTimeI = extrList[w][2];
    int iTimeJ = extrList[w][3];
 
-   if (debug) cerr << " testing extruder step from "+to_string(i)+"-"+to_string(j)+" (w="+to_string(w)+
-                           ") direction="+to_string(dir) << endl;
+   //if (debug) cerr << " testing extruder step from "+to_string(i)+"-"+to_string(j)+" (w="+to_string(w)+
+   //                        ") direction="+to_string(dir) << endl;
      
    
    // check if it is allowed overcoming another extrusor
