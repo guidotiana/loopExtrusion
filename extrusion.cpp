@@ -604,7 +604,7 @@ bool Extrusion::CheckStepOk( int w, int dir, bool ctcf_cross, bool debug=false )
       {
         for (int k=0;k<n_extr_bound;k++) 	// if there is an extrusor in i from more time, skip.
            if ( (k!=w && extrList[k][0] == i && extrList[k][2] < iTimeI ) || 
-                    (k!=w && extrList[k][1] == i && extrList[k][3] < iTimeI ) ) 
+                    (k!=w && extrList[k][1] == i) ) 
            {
               if (debug) cerr << "  step is stopped by overlap with w="+to_string(k)+" ("+
                                      to_string(extrList[k][0])+"-"+to_string(extrList[k][1])+")" << endl;
@@ -614,7 +614,7 @@ bool Extrusion::CheckStepOk( int w, int dir, bool ctcf_cross, bool debug=false )
       else if ( dir == 1 )
       {
         for (int k=0;k<n_extr_bound;k++) 	// if there is an extrusor in j from more time, skip.
-           if ( (k!=w && extrList[k][0] == j && extrList[k][2] < iTimeI ) || 
+           if ( (k!=w && extrList[k][0] == j) || 
                     (k!=w && extrList[k][1] == j && extrList[k][3] < iTimeI ) ) 
            {
               if (debug) cerr << "  step is stopped by overlap with w="+to_string(k)+" ("+
