@@ -6,22 +6,22 @@ C++ wrapper that calls LAMMPS as a library and performs loop extrusion of cohesi
 ------- CONTENTS -------
 ------------------------
 
-- loopExtrusion.cpp is the executable, the main script which initialise LAMMPS, the Gillespie algorithm and launch the simulation.
+- *loopExtrusion.cpp* is the executable, the main script which initialise LAMMPS, the Gillespie algorithm and launch the simulation.
 
-- extrusion.cpp/extrusion.h define the C++ class which drives the Gillespie algorithm simulating the extrusion process
+- *extrusion.cpp/extrusion.h* define the C++ class which drives the Gillespie algorithm simulating the extrusion process
 
-- parameters.cpp/parameters.h define the C++ class which reads the parameters of the simulation.
+- *parameters.cpp/parameters.h* define the C++ class which reads the parameters of the simulation.
 
-- interface_lmp.cpp/interface_lmp.h define the C++ class which calls LAMMPS as a library and update the simulation according to the Gillespie algorithm.
+- *interface_lmp.cpp/interface_lmp.h* define the C++ class which calls LAMMPS as a library and update the simulation according to the Gillespie algorithm.
 
-- test.tar contains the files to run an example simulation (read the 'RUNNING THE TEST SIMULATION' section below). 
+- *test.tar* contains the files to run an example simulation (read the 'RUNNING THE TEST SIMULATION' section below). 
 
 
 ----------------------------
 ------- INSTALLATION -------
 ----------------------------
 
-BUILDING LAMMPS:
+**BUILDING LAMMPS:**
 
 - Download and unpack tarball from LAMMPS site (tested for lammps-29Sep2021).
 - Inside the LAMMPS folder, run the following commands:
@@ -42,14 +42,14 @@ BUILDING LAMMPS:
 
 Now you should have a LAMMPS installation that supports being called by external code.
 
-COMPILING:
+**COMPILING:**
 
 - Download and unpack the 'loopExtrusion' folder.
 - Run the 'make' command inside the folder to compile.
 
 Now you should have the loopExtrusion executable.
 
-RUNNING THE TEST SIMULATION: 
+**RUNNING THE TEST SIMULATION:** 
 
 - Unpack the 'test' folder.
 - 'polymer.data' is a LAMMPS configuration file for a homo-polymer.
