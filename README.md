@@ -2,6 +2,21 @@
 
 C++ wrapper that calls LAMMPS as a library and performs loop extrusion of cohesin along chromatin.
 
+------------------------
+------- CONTENTS -------
+------------------------
+
+- loopExtrusion.cpp is the executable, the main script which initialise LAMMPS, the Gillespie algorithm and launch the simulation.
+
+- extrusion.cpp/extrusion.h define the C++ class which drives the Gillespie algorithm simulating the extrusion process
+
+- parameters.cpp/parameters.h define the C++ class which reads the parameters of the simulation.
+
+- interface_lmp.cpp/interface_lmp.h define the C++ class which calls LAMMPS as a library and update the simulation according to the Gillespie algorithm.
+
+- test.tar contains the files to run an example simulation (read the 'RUNNING THE TEST SIMULATION' section below). 
+
+
 ----------------------------
 ------- INSTALLATION -------
 ----------------------------
