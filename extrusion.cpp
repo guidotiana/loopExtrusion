@@ -109,7 +109,7 @@ bool Extrusion::RandomUnbind( bool debug=false )
    int j = extrList[w][1];
    if (debug) cerr << to_string(iTime)+") Random unbind extruder from sites "+to_string(i)+"-"+to_string(j)
                        +" (w="+to_string(w)+")" << endl; 
-   return RemoveExtruder(i, j);
+   return RemoveExtruder(i, j, iTimeI, iTimeJ);
 }
 
 
@@ -144,7 +144,7 @@ bool Extrusion::RandomStepForward(  bool ctcf_cross,  bool debug=false )
        // if it has reached the ends then unbinds
        if (i == 0 || j == length-1 )
        {
-          RemoveExtruder(i, j);
+          RemoveExtruder(i, j, iTimeI, iTimeJ);
           if (debug) cerr << to_string(iTime)+") Reaches one of the ends and unbinds" << endl;
           return true;
        }
@@ -157,7 +157,7 @@ bool Extrusion::RandomStepForward(  bool ctcf_cross,  bool debug=false )
        // from i
        if ( dir == 0 && go_ahead )	
        {
-           RemoveExtruder(i, j);
+           RemoveExtruder(i, j, iTimeI, iTimeJ);
            AddExtruder(i-1, j, iTime, iTimeJ);
 
            if (debug) cerr << to_string(iTime)+") Accepted move to "+to_string(i-1)+"-"+to_string(j) << endl;
@@ -167,7 +167,7 @@ bool Extrusion::RandomStepForward(  bool ctcf_cross,  bool debug=false )
        else if ( dir == 1 && go_ahead )
        {
 
-           RemoveExtruder(i, j);
+           RemoveExtruder(i, j, iTimeI, iTimeJ);
            AddExtruder(i, j+1, iTimeI, iTime);
 
            if (debug) cerr << to_string(iTime)+") Accepted move to "+to_string(i)+"-"+to_string(j+1) << endl;
@@ -458,8 +458,7 @@ bool Extrusion::AddExtruder(int i, int j, int iTimeI, int iTimeJ)
 /////////////////////////////////////////////
 // Destroy an extruder at sites i, j 
 /////////////////////////////////////////////
-bool Extrusion::RemoveExtruder(int i, int j)
-{
+bool Extrusion::RemoveExtruder(int i, int j, int iTimeI, int iTimeJ){
   if ( map[i][j]==0) 
   {
      exitError = "Trying to remove extruder that is not there (i="+to_string(i)+", j="+to_string(j)+")";
@@ -472,7 +471,7 @@ bool Extrusion::RemoveExtruder(int i, int j)
   occupiedSites[j] --;
 
   for (int n=0;n<n_extr_bound;n++)
-     if ( (extrList[n][0] == i && extrList[n][1] == j) || (extrList[n][0] == j && extrList[n][1] == i) )
+     if ( (extrList[n][0] == i && extrList[n][1] == j && extrList[n][2] == iTimeI && extrList[n][3] == iTimeJ) || (extrList[n][0] == j && extrList[n][1] == i && extrList[n][2] == iTimeI && extrList[n][3] == iTimeJ) )
      {
         for (int k=0;k<4;k++)
            extrList[n][k] = extrList[n_extr_bound-1][k]; 

@@ -76,7 +76,7 @@ class Extrusion
      bool RandomUnbind( bool debug);
      bool RandomStepForward(  bool ctcf_cross, bool debug);
      bool AddExtruder(int i, int j, int iTimeI, int iTimeJ);
-     bool RemoveExtruder(int i, int j);
+     bool RemoveExtruder(int i, int j, int iTimeI, int iTimeJ);
      int iRand(int n);
      double DRand( void );
      bool LogicalXOR(bool a, bool b);
