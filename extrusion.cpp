@@ -103,10 +103,13 @@ bool Extrusion::RandomBind( bool debug=false )
 // Unbind an extruder chosen at random 
 /////////////////////////////////////////////
 bool Extrusion::RandomUnbind( bool debug=false )
-{
+{ 
    int w = iRand( n_extr_bound );
    int i = extrList[w][0];
    int j = extrList[w][1];
+   int iTimeI = extrList[w][2];
+   int iTimeJ = extrList[w][3];
+   
    if (debug) cerr << to_string(iTime)+") Random unbind extruder from sites "+to_string(i)+"-"+to_string(j)
                        +" (w="+to_string(w)+")" << endl; 
    return RemoveExtruder(i, j, iTimeI, iTimeJ);
