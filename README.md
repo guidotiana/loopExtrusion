@@ -45,6 +45,7 @@ Now you should have a LAMMPS installation that supports being called by external
 **COMPILING:**
 
 - Download and unpack the 'loopExtrusion' folder.
+- Modify *Makefile* with your own directories 
 - Run the 'make' command inside the folder to compile.
 
 Now you should have the loopExtrusion executable.
