@@ -37,8 +37,15 @@ int main(int argc, char **argv)
        {
           // Gillespie event
           ok = e.Event( parm.debug );
-          tau_0 += e.tau;
-
+          
+          if (!ok){
+             cout << "Binding probability is zero, no loop extrusion" << endl;
+             tau_0 = parm.time_max;
+          } 
+          else {
+             tau_0 += e.tau;
+          }
+ 
           // Update of links
           inter_lmp.update_bonds(2, e.add_link, e.delete_link, e.add_link_i, e.add_link_j, e.delete_link_i, e.delete_link_j);
        }
