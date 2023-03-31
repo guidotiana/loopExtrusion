@@ -73,6 +73,6 @@ A brief explanation of the parameters you can set for the loop extrusion simulat
 - *n_extr_tot* (int): maximum number of extruders available (default=-1, i.e. unlimited extruders available)
 - *n_extr_max* (int): maximum number of active extruders on the chain (default=0)
 - *seed* (int): seed for the generation of random numbers (default=-1, i.e. the seed is generated)
-- *debug* (bool): if True, activate debug mode, which print real-time information about the extrusion process (default=False)
+- *debug* (bool): if True, activate debug mode, which prints real-time information about the extrusion process (default=False)
 - *allow_overcome* (bool): if True, the extruders can cross themselves (default=False)
 - *stride_log* (int): print output every *stride_log* Gillespie iterations (default=-1, i.e. don't print output)
