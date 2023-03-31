@@ -59,4 +59,20 @@ Now you should have the loopExtrusion executable.
 - Run the following command: 
  
     $PATH/loopExtrusion param.in polymer.lam 
+    
+----------------------
+----- PARAMETERS -----
+----------------------
 
+A brief explanation of the parameters you can set for the loop extrusion simulation:
+
+- *k_binding* (float): rate of loading of extruders (default=0)
+- *k_unbinding* (float): rate of unloading of extruders (default=0)
+- *k_step* (float): rate of movement of extruders (default=0)
+- *k_cross_ctcf* (float): rate of crossing of a CTCF site (default=0)
+- *n_extr_tot* (int): maximum number of extruders available (default=-1, i.e. unlimited extruders available)
+- *n_extr_max* (int): maximum number of active extruders on the chain (default=0)
+- *seed* (int): seed for the generation of random numbers (default=-1, i.e. the seed is generated)
+- *debug* (bool): if True, activate debug mode, which print real-time information about the extrusion process (default=False)
+- *allow_overcome* (bool): if True, the extruders can cross themselves (default=False)
+- *stride_log* (int): print output every *stride_log* Gillespie iterations (default=-1, i.e. don't print output)
