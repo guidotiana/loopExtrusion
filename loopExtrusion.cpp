@@ -65,6 +65,7 @@ int main(int argc, char **argv)
        if ( parm.stride_log>0 && !(iStep%parm.stride_log) )
        {
           cout << "Time = " << time << "\t\t" << "# extruders = " << e.n_extr_bound << endl;
+          inter_lmp.print_bonds();   
        }
     } while ( time < parm.time_max );
   

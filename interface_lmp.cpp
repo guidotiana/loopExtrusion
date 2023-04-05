@@ -146,6 +146,64 @@ void Interface_lmp::write_data(string str)
    line.clear();  
 }
 
+void Interface_lmp::print_bonds()
+{
+   //initialise variables
+   int tagintsize;
+   int64_t i, nbonds, natoms;
+   void *bonds;
+   //allocate memory for bonds data
+   tagintsize = lammps_extract_setting(lmp, "tagint");
+   if (tagintsize == 4)
+      nbonds = *(int32_t *)lammps_extract_global(lmp, "nbonds");
+   else
+      nbonds = *(int64_t *)lammps_extract_global(lmp, "nbonds");
+   bonds = malloc(nbonds * 3 * tagintsize);
+   
+   lammps_gather_bonds(lmp, bonds);
+   if (lammps_extract_setting(lmp, "world_rank") == 0) {
+      if (tagintsize == 4) {
+         int32_t *bonds_real = (int32_t *)bonds;
+         double *x = NULL;
+         //gather atoms information
+         natoms = *(int64_t *)lammps_extract_global(lmp, "natoms");
+         x = new double[3*natoms];
+         lammps_gather_atoms(lmp,(char *) "x",1,3,x);
+         
+         float x_cm, y_cm, z_cm; //center of mass of two beads = position of extruder
+         int id1, id2;
+         for (int i=0; i<nbonds; i++){
+            if (bonds_real[3*i] ==2 ){
+               id1 = bonds_real[3*i+1];
+               id2 = bonds_real[3*i+2];
+               x_cm = (x[3*id1]+x[3*id2])/2;                                                                              y_cm = (x[3*id1+1]+x[3*id2+1])/2;                                                                          z_cm = (x[3*id1+2]+x[3*id2+2])/2;
+               cout << id1 <<" " << id2 << " " << x_cm << " " << y_cm << " " << z_cm << " " << endl;
+            }
+         }
+      }
+
+      else {
+         int64_t *bonds_real = (int64_t *)bonds;
+         double *x = NULL;
+         natoms = *(int64_t *)lammps_extract_global(lmp, "natoms");
+         x = new double[3*natoms];
+         lammps_gather_atoms(lmp,(char *) "x",1,3,x);
+         float x_cm, y_cm, z_cm;
+         int id1, id2;
+         for (i = 0; i < nbonds; ++i) {
+            if (bonds_real[3*i]==2){
+               id1 = bonds_real[3*i+1];
+               id2 = bonds_real[3*i+2];
+               x_cm = (x[3*id1]+x[3*id2])/2;
+               y_cm = (x[3*id1+1]+x[3*id2+1])/2;
+               z_cm = (x[3*id1+2]+x[3*id2+2])/2;
+               cout << id1 <<" " << id2 << " " << x_cm << " " << y_cm << " " << z_cm << " " << endl;
+            }
+         }
+      }
+   }
+}
+      
 void Interface_lmp::minimize()
 {  
    //don't dump/output minimization data
