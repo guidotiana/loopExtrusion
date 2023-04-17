@@ -54,9 +54,16 @@ int main(int argc, char **argv)
        inter_lmp.minimize();
        
        //Molecular dynamics with LAMMPS from time to (time + e.tau)
+       int time_left = parm.time_max-time;
        time += tau_0;
-       inter_lmp.run_dynamics(min(parm.time_max,ceil(tau_0)));
-       
+       if (ceil(tau_0)>parm.time_max){
+          inter_lmp.run_dynamics(parm.time_max);
+       }
+       else if (ceil(tau_0)>time_left){
+          inter_lmp.run_dynamics(time_left);
+       }
+       else inter_lmp.run_dynamics(ceil(tau_0));       
+
        //Update internal time variables
        iStep ++;
        tau_0 = 0;
