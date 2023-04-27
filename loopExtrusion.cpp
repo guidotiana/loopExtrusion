@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     Extrusion e( parm );
 
     //Initializing lammps and opening interface
-    Interface_lmp inter_lmp(argc, argv); 
+    Interface_lmp inter_lmp(argc, argv, parm.screen); 
    
     //Reading CTCF sites
     e.ReadCTCF("ctcf_sites.data");

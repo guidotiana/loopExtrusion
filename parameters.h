@@ -30,6 +30,7 @@ class Parameters
       bool verbose;
       bool debug;
       bool allow_overcome;
+      bool screen;
       int n_extr_tot; 		// set to -1 to ignore
       int n_extr_max; 		
       int seed;

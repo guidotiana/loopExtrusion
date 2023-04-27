@@ -24,8 +24,7 @@ Parameters::Parameters( int argc, char **argv )
      seed = -1;
      stride_log = -1;
      n_extr_max = 0.;
-
-
+     screen = false;
      debug = false;
 
      // read file
@@ -60,7 +59,8 @@ bool Parameters::ReadFile( string fileName )
            if ( word[0] == "k_step" ) k_step = stod( word[1] ); 
            if ( word[0] == "k_cross_ctcf" ) k_cross_ctcf = stod( word[1] ); 
            if ( word[0] == "verbose" ) verbose = true; 
-           if ( word[0] == "debug" ) debug = true; 
+           if ( word[0] == "debug" ) debug = true;
+           if ( word[0] == "screen" ) screen = true; 
            if ( word[0] == "allow_overcome" ) allow_overcome = true; 
            if ( word[0] == "n_extr_tot" ) n_extr_tot = stoi( word[1] ); 
            if ( word[0] == "seed" ) seed = stoi( word[1] ); 

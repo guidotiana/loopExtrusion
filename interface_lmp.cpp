@@ -1,14 +1,14 @@
 #include "interface_lmp.h"
 #include "update.h"
 
-Interface_lmp::Interface_lmp(int argc, char **argv)
+Interface_lmp::Interface_lmp(int argc, char **argv, bool screen)
 {
    cout << "Opening interface with LAMMPS..." << endl;
    cout << "" << endl;
-   initiate_lmp(argc, argv);
+   initiate_lmp(argc, argv, screen);
 }
 
-void Interface_lmp::initiate_lmp(int argc, char **argv)
+void Interface_lmp::initiate_lmp(int argc, char **argv, bool screen)
 {
    cout << "Initializing LAMMPS..." << endl;
    cout << "" << endl;
@@ -47,7 +47,9 @@ void Interface_lmp::initiate_lmp(int argc, char **argv)
   lmp = new LAMMPS_NS::LAMMPS(0,NULL,MPI_COMM_WORLD);
   
   //Turn off screen output
-  lmp->screen = NULL;  
+  if (screen == false){
+     lmp->screen = NULL;
+  }  
   //Turn off log output
   lmp->logfile = NULL;  
 
