@@ -30,7 +30,7 @@ C++ wrapper that calls LAMMPS as a library and performs loop extrusion of cohesi
 
     cd build
 
-    cmake3 -D PKG_BROWNIAN=yes -D PKG_MOLECULE=yes -D PKG_OPENMP=yes -D PKG_REPLICA=yes -D PKG_EXTRA-DUMP=yes -D PKG_USER-LE=yes -D PKG_MISC=yes -D PKG_USER-MISC=yes -D BUILD_SHARED_LIBS=yes -D LAMMPS_INSTALL_RPATH=on ../cmake
+    cmake3 -D PKG_BROWNIAN=yes -D PKG_MOLECULE=yes -D PKG_OPENMP=yes -D PKG_REPLICA=yes -D PKG_EXTRA-DUMP=yes -D PKG_MISC=yes -D PKG_USER-MISC=yes -D BUILD_SHARED_LIBS=yes -D LAMMPS_INSTALL_RPATH=on ../cmake
 
     make -j 8
 
