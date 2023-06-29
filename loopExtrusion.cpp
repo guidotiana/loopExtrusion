@@ -24,12 +24,12 @@ int main(int argc, char **argv)
     //Initializing extrusion algorithm
     Extrusion e( parm );
 
+    //Reading CTCF sites
+    e.ReadCTCF(parm.ctcf_file);
+
     //Initializing lammps and opening interface
     Interface_lmp inter_lmp(argc, argv, parm.screen); 
-   
-    //Reading CTCF sites
-    e.ReadCTCF("ctcf_sites.data");
- 
+
     //Main Gillespie loop    
     do
     {  
