@@ -205,6 +205,8 @@ bool Extrusion::RandomStepForward(bool ctcf_cross, bool debug = false)
 /////////////////////////////////////////////
 bool Extrusion::ReadCTCF(string fileName)
 {
+   cout << "Reading CTCF file" << endl;
+   cout << endl;
 
    // 4 CTCF types.
    //  -1 : left barrier
@@ -215,6 +217,14 @@ bool Extrusion::ReadCTCF(string fileName)
    int i, ctcf_type;
    string line;
 
+   if ( fileName.empty() )
+   {
+      cout << "No CTCF file provided" << endl;
+      cout << endl;
+
+      return false;
+   }
+   
    ifstream fin(fileName);
    if (fin.is_open())
    {
@@ -237,13 +247,14 @@ bool Extrusion::ReadCTCF(string fileName)
    }
    else
    {
-      exitError = "Cannot open CTCF file " + fileName;
-      return false;
+      cout << "Cannot open CTCF file "+filename << endl;
+      exit(1);
    }
 
    fin.close();
 
    cout << "CTCF sites read from " << fileName << endl;
+   cout << endl;
 
    return true;
 }
