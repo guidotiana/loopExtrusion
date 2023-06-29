@@ -34,6 +34,7 @@ class Parameters
       int n_extr_tot; 		// set to -1 to ignore
       int n_extr_max; 		
       int seed;
+      string ctcf_file;
 
       Parameters( int, char ** );
       void Error( string );
