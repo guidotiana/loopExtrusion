@@ -247,7 +247,7 @@ bool Extrusion::ReadCTCF(string fileName)
    }
    else
    {
-      cout << "Cannot open CTCF file "+filename << endl;
+      cout << "Cannot open CTCF file "+fileName << endl;
       exit(1);
    }
 
