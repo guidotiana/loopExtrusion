@@ -97,6 +97,16 @@ bool Parameters::ReadFile( string fileName )
      if (length < 1) Error("The length of the chain mast be larger than 1");
      if (time_max<1E-15) Error("You must define time_max in the parameter file");
 
+     // Warnings
+     if (time_max <= 2.3/k_binding){
+        // 2.3 ~ -log(0.1), in this case there is a probability 0.1 that no extruders will load.  
+        cout << "+++++++++++++++++++++" << endl;
+        cout << "WARNING: the binding time of extruders seems large for your simulation time. Probable absence of loop-extrusion with these parameters!" << endl;
+        cout << "The simulation may also misbehave." << endl;
+        cout << "+++++++++++++++++++++" << endl;
+        cout << endl;
+     }
+
      fin.close();
 
      return true;

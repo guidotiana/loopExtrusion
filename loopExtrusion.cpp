@@ -44,10 +44,9 @@ int main(int argc, char **argv)
           } 
           else {
              tau_0 += e.tau;
+             // Update of links
+             inter_lmp.update_bonds(2, e.add_link, e.delete_link, e.add_link_i, e.add_link_j, e.delete_link_i, e.delete_link_j);
           }
- 
-          // Update of links
-          inter_lmp.update_bonds(2, e.add_link, e.delete_link, e.add_link_i, e.add_link_j, e.delete_link_i, e.delete_link_j);
        }
 
        //Minimize energy of new configuration
@@ -55,14 +54,15 @@ int main(int argc, char **argv)
        
        //Molecular dynamics with LAMMPS from time to (time + e.tau)
        int time_left = parm.time_max-time;
-       time += tau_0;
-       if (ceil(tau_0)>parm.time_max){
-          inter_lmp.run_dynamics(parm.time_max);
-       }
-       else if (ceil(tau_0)>time_left){
+
+       if (ceil(tau_0) > time_left){
           inter_lmp.run_dynamics(time_left);
+          time = parm.time_max;
        }
-       else inter_lmp.run_dynamics(ceil(tau_0));       
+       else {
+          inter_lmp.run_dynamics(ceil(tau_0));      
+          time += tau_0;
+       } 
 
        //Update internal time variables
        iStep ++;
