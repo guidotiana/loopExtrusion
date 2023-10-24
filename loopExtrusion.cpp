@@ -27,8 +27,17 @@ int main(int argc, char **argv)
     //Reading CTCF sites
     e.ReadCTCF(parm.ctcf_file);
 
+    //Reading state
+    e.ReadState(parm.state_file, true); 
+
     //Initializing lammps and opening interface
     Interface_lmp inter_lmp(argc, argv, parm.screen); 
+
+    //Loading initial extruders in lammps
+    for (int i=0; i<e.n_extr_bound; i++)
+       {
+         inter_lmp.load_bond(2, e.extrList[i][0]+1, e.extrList[i][1]+1);
+       }
 
     //Main Gillespie loop    
     do

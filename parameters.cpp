@@ -67,6 +67,7 @@ bool Parameters::ReadFile( string fileName )
            if ( word[0] == "length" ) length = stoi( word[1] ); 
            if ( word[0] == "n_extr_max" ) n_extr_max = stoi( word[1] ); 
            if ( word[0] == "ctcf_file" ) ctcf_file = word[1];
+           if ( word[0] == "state_file" ) state_file = word[1];
         } 
      }
 
@@ -90,6 +91,7 @@ bool Parameters::ReadFile( string fileName )
         cout << "seed              = "+to_string(seed) << endl;
         cout << "debug             = "+BoolToString(debug) << endl;
         if ( !ctcf_file.empty() ) cout << "ctcf_file         "+ctcf_file << endl;
+        if ( !state_file.empty() ) cout << "state_file        = "+state_file << endl;        
         cout << endl;
      }
 

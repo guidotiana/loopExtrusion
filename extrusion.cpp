@@ -294,8 +294,31 @@ bool Extrusion::PrintState(string fileName)
 /////////////////////////////////////////////
 bool Extrusion::ReadState(string fileName, bool debug = false)
 {
+   cout << "Reading Initial state file..." << endl;
+   cout << endl;
+
    int k;
 
+   ifstream fin(fileName);
+
+   // check if file is provided
+   if ( fileName.empty() )
+      {
+         cout << "No State file provided" << endl;
+         cout << endl;
+   
+         return false;
+      }
+   
+    // check if file exists 
+    if (fin.fail())
+    {
+       cout << "State file doesn't exist" << endl;
+       cout << endl;
+  
+       return false;
+    }
+   
    // delete existing arrays
    delete map;
    delete[] extrList;
@@ -303,7 +326,6 @@ bool Extrusion::ReadState(string fileName, bool debug = false)
    delete occupiedSites;
 
    // read from file
-   ifstream fin(fileName);
    if (fin.is_open())
    {
       fin >> length;

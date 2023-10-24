@@ -35,6 +35,7 @@ class Parameters
       int n_extr_max; 		
       int seed;
       string ctcf_file;
+      string state_file;    
 
       Parameters( int, char ** );
       void Error( string );
