@@ -77,3 +77,5 @@ A brief explanation of the parameters you can set for the loop extrusion simulat
 - *allow_overcome*: allows the extruders to cross themselves (default=False)
 - *screen*: output of LAMMPS is printed in the terminal (default=False)
 - *stride_log* (int): print output every *stride_log* Gillespie iterations (default=-1, i.e. don't print output)
+- *state_file (str): file with info on active extruders at the start of the simulation
+- *ctcf_file (str): file with positions and type of ctcf sites
