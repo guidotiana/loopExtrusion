@@ -68,11 +68,11 @@ int main(int argc, char **argv)
        int time_left = parm.time_max-time;
 
        if (ceil(tau_0) > time_left){
-          inter_lmp.run_dynamics(time_left);
+          inter_lmp.run_dynamics(time_left/parm.timestep);
           time = parm.time_max;
        }
        else {
-          inter_lmp.run_dynamics(ceil(tau_0));      
+          inter_lmp.run_dynamics(ceil(tau_0)/parm.timestep);      
           time += tau_0;
        } 
 
