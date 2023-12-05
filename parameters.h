@@ -35,6 +35,7 @@ class Parameters
       int n_extr_tot; 		// set to -1 to ignore
       int n_extr_max; 		
       int seed;
+      double tau_min;
       string ctcf_file;
       string state_file;    
 

@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     double time=0, tau;
     bool ok;
     int iStep=0;
-    double tau_min=300, tau_0=0; //minimum time between dynamics runs 
+    double tau_0=0; //minimum time between dynamics runs 
     string data_line = "write_data last.data"; 
     
     //Reading Gillespie parameters
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
     //Main Gillespie loop    
     do
     {  
-       while (tau_0 < tau_min)
+       while (tau_0 <= parm.tau_min)
        {
           // Gillespie event
           ok = e.Event( parm.debug );

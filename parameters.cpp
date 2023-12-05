@@ -24,6 +24,7 @@ Parameters::Parameters( int argc, char **argv )
      seed = -1;
      stride_log = -1;
      n_extr_max = 0.;
+     tau_min = 0.;
      screen = false;
      debug = false;
 
@@ -67,6 +68,7 @@ bool Parameters::ReadFile( string fileName )
            if ( word[0] == "seed" ) seed = stoi( word[1] ); 
            if ( word[0] == "length" ) length = stoi( word[1] ); 
            if ( word[0] == "n_extr_max" ) n_extr_max = stoi( word[1] ); 
+           if ( word[0] == "tau_min" ) tau_min = stod( word[1] ); 
            if ( word[0] == "ctcf_file" ) ctcf_file = word[1];
            if ( word[0] == "state_file" ) state_file = word[1];
         } 
@@ -79,17 +81,18 @@ bool Parameters::ReadFile( string fileName )
         
         Welcome( VERSION );
         cout << "Parameters read from "+fileName << endl;
-        cout << "time_max          = "+to_string(time_max) << endl;
+        cout << "time_max          = " << time_max << endl;
         cout << "timestep          = "+to_string(timestep) << endl;
         cout << "stride_log        = "+to_string(stride_log) << endl;
         cout << "length            = "+to_string(length) << endl;
-        cout << "k_binding         = "+to_string(k_binding) << endl;
-        cout << "k_unbinding       = "+to_string(k_unbinding) << endl;
-        cout << "k_step            = "+to_string(k_step) << endl;
-        cout << "k_cross_ctcf      = "+to_string(k_cross_ctcf) << endl;
+        cout << "k_binding         = " << k_binding << endl;
+        cout << "k_unbinding       = " << k_unbinding << endl;
+        cout << "k_step            = " << k_step << endl;
+        cout << "k_cross_ctcf      = " << k_cross_ctcf << endl;
         cout << "allow_overcome    = "+BoolToString(allow_overcome) << endl;
         cout << "n_extr_tot        = "+to_string(n_extr_tot) << endl;
         cout << "n_extr_max        = "+to_string(n_extr_max) << endl;
+        cout << "tau min           = "+to_string(tau_min) << endl;
         cout << "seed              = "+to_string(seed) << endl;
         cout << "debug             = "+BoolToString(debug) << endl;
         if ( !ctcf_file.empty() ) cout << "ctcf_file         "+ctcf_file << endl;
