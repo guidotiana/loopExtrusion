@@ -66,10 +66,12 @@ Now you should have the loopExtrusion executable.
 
 A brief explanation of the parameters you can set for the loop extrusion simulation:
 
-- *k_binding* (float): rate of loading of extruders (default=0)
-- *k_unbinding* (float): rate of unloading of extruders (default=0)
-- *k_step* (float): rate of movement of extruders (default=0)
-- *k_cross_ctcf* (float): rate of crossing of a CTCF site (default=0)
+- *time_max* (double): total time of simulation
+- *timestep* (double): timestep of integration
+- *k_binding* (double): rate of loading of extruders (default=0)
+- *k_unbinding* (double): rate of unloading of extruders (default=0)
+- *k_step* (double): rate of movement of extruders (default=0)
+- *k_cross_ctcf* (double): rate of crossing of a CTCF site (default=0)
 - *n_extr_tot* (int): maximum number of extruders available (default=-1, i.e. unlimited extruders available)
 - *n_extr_max* (int): maximum number of active extruders on the chain (default=0)
 - *seed* (int): seed for the generation of random numbers (default=-1, i.e. the seed is generated)
