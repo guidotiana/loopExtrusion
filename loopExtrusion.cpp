@@ -32,6 +32,9 @@ int main(int argc, char **argv)
 
     //Initializing lammps and opening interface
     Interface_lmp inter_lmp(argc, argv, parm.screen); 
+    
+    //Setting integration timestep
+    inter_lmp.set_timestep(parm.timestep);
 
     //Loading initial extruders in lammps
     for (int i=0; i<e.n_extr_bound; i++)
@@ -80,6 +83,7 @@ int main(int argc, char **argv)
        //Print output
        if ( parm.stride_log>0 && !(iStep%parm.stride_log) )
        {
+          cout << fixed;
           cout << "Time = " << time << "\t\t" << "# extruders = " << e.n_extr_bound << endl;
           inter_lmp.print_bonds();   
        }

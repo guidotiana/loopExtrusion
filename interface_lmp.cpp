@@ -68,6 +68,17 @@ void Interface_lmp::initiate_lmp(int argc, char **argv, bool screen)
  
 }
 
+void Interface_lmp::set_timestep(double timestep)
+{
+   ostringstream line;
+   line << "timestep " << timestep;
+   string MyString  = line.str();
+   lammps_command(lmp, MyString.c_str());
+   line.str("");
+   line.clear();
+
+}
+
 void Interface_lmp::load_bond(int bond_type, int new_id1, int new_id2)
 {
    //create bond

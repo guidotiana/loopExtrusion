@@ -22,6 +22,7 @@ class Parameters
 
       int length;
       double time_max;
+      double timestep;
       int stride_log;
       double k_binding;
       double k_unbinding;

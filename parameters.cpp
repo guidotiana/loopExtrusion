@@ -52,7 +52,8 @@ bool Parameters::ReadFile( string fileName )
         if ( !line.empty() ) 
         { 
            Split(line, " \n\t=", word); 
-           if ( word[0] == "time_max" ) time_max = stod( word[1] ); 
+           if ( word[0] == "time_max" ) time_max = stod( word[1] );
+           if ( word[0] == "timestep" ) timestep = stod( word[1] ); 
            if ( word[0] == "stride_log" ) stride_log = stoi( word[1] ); 
            if ( word[0] == "k_binding" ) k_binding = stod( word[1] ); 
            if ( word[0] == "k_unbinding" ) k_unbinding = stod( word[1] ); 
@@ -79,6 +80,7 @@ bool Parameters::ReadFile( string fileName )
         Welcome( VERSION );
         cout << "Parameters read from "+fileName << endl;
         cout << "time_max          = "+to_string(time_max) << endl;
+        cout << "timestep          = "+to_string(timestep) << endl;
         cout << "stride_log        = "+to_string(stride_log) << endl;
         cout << "length            = "+to_string(length) << endl;
         cout << "k_binding         = "+to_string(k_binding) << endl;
@@ -98,6 +100,7 @@ bool Parameters::ReadFile( string fileName )
      // checks
      if (length < 1) Error("The length of the chain mast be larger than 1");
      if (time_max<1E-15) Error("You must define time_max in the parameter file");
+     if (timestep<1E-15) Error("You must define timestep in the parameter file");
 
      // Warnings
      if (time_max <= 2.3/k_binding){
