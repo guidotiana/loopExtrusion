@@ -25,12 +25,13 @@ C++ wrapper that calls LAMMPS as a library and performs loop extrusion of cohesi
 
 - Download and unpack tarball from LAMMPS site (tested for lammps-29Sep2021).
 - Inside the LAMMPS folder, run the following commands:
-  create 'build' folder
+  
+Create 'build' folder
   ```bash
     $ mkdir build
     $ cd build
   ```
- install LAMMPS
+Install LAMMPS
  ```bash
    $ cmake3 -D PKG_BROWNIAN=yes -D PKG_MOLECULE=yes -D PKG_OPENMP=yes -D PKG_REPLICA=yes -D PKG_EXTRA-DUMP=yes -D PKG_MISC=yes -D PKG_USER-MISC=yes -D BUILD_SHARED_LIBS=yes -D LAMMPS_INSTALL_RPATH=on ../cmake
    $ make -j 8
