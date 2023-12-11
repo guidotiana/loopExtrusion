@@ -69,6 +69,7 @@ A brief explanation of the parameters you can set for the loop extrusion simulat
 
 - *time_max* (double): total time of simulation
 - *timestep* (double): timestep of integration
+- *tau_min* (double): minimum time interval between calls to LAMMPS (default=0)
 - *k_binding* (double): rate of loading of extruders (default=0)
 - *k_unbinding* (double): rate of unloading of extruders (default=0)
 - *k_step* (double): rate of movement of extruders (default=0)
