@@ -13,7 +13,7 @@ Extrusion::Extrusion(Parameters parm)
 
    // allocate memory
    map = AlloArrayInt(parm.length);
-   extrList = new int[parm.n_extr_max][4];
+   extrList = new int[parm.n_extr_max][5];
    ctcf = new int[parm.length];
    for (int i = 0; i < parm.length; i++)
       ctcf[i] = 0;
@@ -21,6 +21,7 @@ Extrusion::Extrusion(Parameters parm)
    occupiedSites = new int[parm.length];
    for (int i = 0; i < parm.length; i++)
       occupiedSites[i] = 0;
+   cnt_extr = 0;   
 
    // set private variables
    iTime = 0;
@@ -75,7 +76,7 @@ bool Extrusion::Event(bool debug = false)
    delete_link = false;
 
    // Calculate propensities for the different reactions
-   CalulatePropensities(debug);
+   CalculatePropensities(debug);
    if (propensities[0] < SMALL)
    {
       exitError = "All propensities are zero";
@@ -105,10 +106,11 @@ bool Extrusion::Event(bool debug = false)
 /////////////////////////////////////////////
 bool Extrusion::RandomBind(bool debug = false)
 {
+   cnt_extr++;
    int i = iRand(length - 1);
    if (debug)
       cerr << to_string(iTime) + ") Random bind extruder at sites " + to_string(i) + "-" + to_string(i + 1) << endl;
-   return AddExtruder(i, i + 1, iTime, iTime);
+   return AddExtruder(i, i + 1, iTime, iTime, cnt_extr);
 }
 
 /////////////////////////////////////////////
@@ -133,7 +135,7 @@ bool Extrusion::RandomUnbind(bool debug = false)
 /////////////////////////////////////////////
 bool Extrusion::RandomStepForward(bool ctcf_cross, bool debug = false)
 {
-   int i, j, iTimeI, iTimeJ, w, cnt = 0, dir;
+   int i, j, iTimeI, iTimeJ, index, w, cnt = 0, dir;
    bool go_ahead, ok;
 
    do
@@ -143,6 +145,7 @@ bool Extrusion::RandomStepForward(bool ctcf_cross, bool debug = false)
       j = extrList[w][1];
       iTimeI = extrList[w][2];
       iTimeJ = extrList[w][3];
+      index = extrList[w][4];
       dir = iRand(2); // 0=move i, 1=move j
 
       if (debug)
@@ -174,7 +177,7 @@ bool Extrusion::RandomStepForward(bool ctcf_cross, bool debug = false)
       if (dir == 0 && go_ahead)
       {
          RemoveExtruder(i, j, iTimeI, iTimeJ);
-         AddExtruder(i - 1, j, iTime, iTimeJ);
+         AddExtruder(i - 1, j, iTime, iTimeJ, index);
 
          if (debug)
             cerr << to_string(iTime) + ") Accepted move to " + to_string(i - 1) + "-" + to_string(j) << endl;
@@ -185,7 +188,7 @@ bool Extrusion::RandomStepForward(bool ctcf_cross, bool debug = false)
       {
 
          RemoveExtruder(i, j, iTimeI, iTimeJ);
-         AddExtruder(i, j + 1, iTimeI, iTime);
+         AddExtruder(i, j + 1, iTimeI, iTime, index);
 
          if (debug)
             cerr << to_string(iTime) + ") Accepted move to " + to_string(i) + "-" + to_string(j + 1) << endl;
@@ -338,7 +341,7 @@ bool Extrusion::ReadState(string fileName, bool debug = false)
          cerr << "Reading from file " + fileName + " " + to_string(n_extr_bound) + " extrusors." << endl;
 
       map = AlloArrayInt(length); // rebuild arrays
-      extrList = new int[n_extr_max][4];
+      extrList = new int[n_extr_max][5];
       ctcf = new int[length];
       for (int i = 0; i < length; i++)
          ctcf[i] = 0;
@@ -347,8 +350,11 @@ bool Extrusion::ReadState(string fileName, bool debug = false)
          occupiedSites[i] = 0;
 
       for (int i = 0; i < n_extr_bound; i++) // read extruders
-         for (int j = 0; j < 4; j++)
+         for (int j = 0; j < 5; j++)
+         {
             fin >> extrList[i][j];
+            if ( extrList[i][4] > cnt_extr ){ cnt_extr = extrList[i][4] + 1; } // update extruder ID counter
+         }
       for (int i = 0; i < nCTCF; i++) // read ctcf
       {
          fin >> k;
@@ -467,7 +473,7 @@ int **Extrusion::AlloArrayInt(int n)
 /////////////////////////////////////////////
 // Create an extruder at sites i, j
 /////////////////////////////////////////////
-bool Extrusion::AddExtruder(int i, int j, int iTimeI, int iTimeJ)
+bool Extrusion::AddExtruder(int i, int j, int iTimeI, int iTimeJ, int index)
 {
    map[i][j]++;
    map[j][i]++;
@@ -475,6 +481,7 @@ bool Extrusion::AddExtruder(int i, int j, int iTimeI, int iTimeJ)
    extrList[n_extr_bound][1] = j;
    extrList[n_extr_bound][2] = iTimeI;
    extrList[n_extr_bound][3] = iTimeJ;
+   extrList[n_extr_bound][4] = index;
    occupiedSites[i]++;
    occupiedSites[j]++;
    n_extr_bound++;
@@ -483,13 +490,6 @@ bool Extrusion::AddExtruder(int i, int j, int iTimeI, int iTimeJ)
       exitError = "nEntrMax too small.";
       CatchError(false);
    }
-
-   /*
-     // set output
-     add_link = true;
-     add_link_i = i;
-     add_link_j = j;
-   */
 
    // tell lammps to add a link if there were none
    if (map[i][j] == 1)
@@ -521,18 +521,13 @@ bool Extrusion::RemoveExtruder(int i, int j, int iTimeI, int iTimeJ)
    for (int n = 0; n < n_extr_bound; n++)
       if ((extrList[n][0] == i && extrList[n][1] == j && extrList[n][2] == iTimeI && extrList[n][3] == iTimeJ) || (extrList[n][0] == j && extrList[n][1] == i && extrList[n][2] == iTimeI && extrList[n][3] == iTimeJ))
       {
-         for (int k = 0; k < 4; k++)
+         for (int k = 0; k < 5; k++)
             extrList[n][k] = extrList[n_extr_bound - 1][k];
          break;
       }
 
    n_extr_bound--;
-   /*
-     // set output
-     delete_link = true;
-     delete_link_i = i;
-     delete_link_j = j;
-   */
+
    // tell lammps to remove a link if there was only one left
    if (map[i][j] == 0)
    {
@@ -577,7 +572,7 @@ bool Extrusion::LogicalXOR(bool a, bool b)
 /////////////////////////////////////////////
 // calculate propensities for Gillespie algorithm
 /////////////////////////////////////////////
-bool Extrusion::CalulatePropensities(bool debug = false)
+bool Extrusion::CalculatePropensities(bool debug = false)
 {
    int n_extr_free, n_steppable = 0, n_cross_ctcf = 0;
 

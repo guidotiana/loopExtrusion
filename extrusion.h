@@ -41,7 +41,8 @@ public:
   int delete_link_i;
   int delete_link_j;
   int n_extr_bound;   // how many extruders bound
-  int (*extrList)[4]; // 0=i, 1=j, 2=time last move i, 3=time last move j
+  int cnt_extr;       // unique progressive index of extruders
+  int (*extrList)[5]; // 0=i, 1=j, 2=time last move i, 3=time last move j, 4=unique index
   string exitError;
 
   // functions
@@ -69,12 +70,12 @@ private:
   bool RandomBind(bool debug);
   bool RandomUnbind(bool debug);
   bool RandomStepForward(bool ctcf_cross, bool debug);
-  bool AddExtruder(int i, int j, int iTimeI, int iTimeJ);
+  bool AddExtruder(int i, int j, int iTimeI, int iTimeJ, int index);
   bool RemoveExtruder(int i, int j, int iTimeI, int iTimeJ);
   int iRand(int n, int seed=42);
   double DRand(int seed=42);
   bool LogicalXOR(bool a, bool b);
-  bool CalulatePropensities(bool debug);
+  bool CalculatePropensities(bool debug);
   bool CheckStepOk(int w, int dir, bool ctcf_cross, bool debug);
   int SelectReaction(void);
   bool ApplyReaction(int r, bool debug);

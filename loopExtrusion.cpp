@@ -85,7 +85,7 @@ int main(int argc, char **argv)
        {
           cout << fixed;
           cout << "Time = " << time << "\t\t" << "# extruders = " << e.n_extr_bound << endl;
-          inter_lmp.print_bonds();   
+          inter_lmp.print_bonds(e.extrList, e.n_extr_bound);   
        }
     } while ( time < parm.time_max );
   

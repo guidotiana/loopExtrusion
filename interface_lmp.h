@@ -28,7 +28,7 @@ public:
     void update_bonds(int bond_type, bool add_link, bool delete_link, int add_link_i, int add_link_j, int delete_link_i, int delete_link_j);
     void minimize();
     void run_dynamics(int steps);
-    void print_bonds();
+    void print_bonds(int (*extrList)[5], int n_extr_bound);
     void write_data(string line);
     void close_lmp();
 
