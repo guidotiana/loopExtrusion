@@ -325,7 +325,6 @@ bool Extrusion::ReadState(string fileName, bool debug = false)
    // delete existing arrays
    delete map;
    delete[] extrList;
-   delete ctcf;
    delete occupiedSites;
 
    // read from file
@@ -334,17 +333,12 @@ bool Extrusion::ReadState(string fileName, bool debug = false)
       fin >> length;
       fin >> n_extr_bound;
       fin >> n_extr_max;
-      fin >> nCTCF;
-      fin >> iTime;
 
       if (debug)
          cerr << "Reading from file " + fileName + " " + to_string(n_extr_bound) + " extrusors." << endl;
 
       map = AlloArrayInt(length); // rebuild arrays
       extrList = new int[n_extr_max][5];
-      ctcf = new int[length];
-      for (int i = 0; i < length; i++)
-         ctcf[i] = 0;
       occupiedSites = new int[length];
       for (int i = 0; i < length; i++)
          occupiedSites[i] = 0;
@@ -355,11 +349,6 @@ bool Extrusion::ReadState(string fileName, bool debug = false)
             fin >> extrList[i][j];
             if ( extrList[i][4] > cnt_extr ){ cnt_extr = extrList[i][4] + 1; } // update extruder ID counter
          }
-      for (int i = 0; i < nCTCF; i++) // read ctcf
-      {
-         fin >> k;
-         ctcf[k] = 1;
-      }
    }
    else
    {
